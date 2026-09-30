@@ -1,0 +1,10 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { ChevronRight, Percent } from "lucide-react";
+import { toolDefinitions } from "@/lib/tool-data";
+import SiteHeader from "@/components/site-header";
+
+const names=["math","everyday","finance","business","construction","converters","developer","health"];
+export function generateStaticParams(){return names.map(category=>({category}));}
+export async function generateMetadata({params}:{params:Promise<{category:string}>}):Promise<Metadata>{const {category}=await params;const title=category[0].toUpperCase()+category.slice(1);return{title:title+" Calculators and Tools | Amarildo Tools",description:"Free "+category+" calculators and tools with clear formulas, instant results, and no sign-up.",alternates:{canonical:"/categories/"+category}}}
+export default async function CategoryPage({params}:{params:Promise<{category:string}>}){const {category}=await params;if(!names.includes(category))notFound();const title=category[0].toUpperCase()+category.slice(1),items=toolDefinitions.filter(t=>t.category.toLowerCase()===category);return <main><SiteHeader/><div className="catalog-page"><span className="kicker">Tool category</span><h1>{title} calculators and tools</h1><p>Practical {category} tools with immediate results, visible methods, and no account required.</p><div className="tool-grid">{items.map((tool,i)=><article className="tool-card" key={tool.slug}><div className={"tool-icon "+["blue","violet","amber","teal","rose","cyan"][i%6]}>{i+1}</div><span className="tool-category">{tool.category}</span><h2>{tool.name}</h2><p>{tool.short}</p><a className="tool-link" href={"/tools/"+tool.slug}>Use tool <ChevronRight size={17}/></a></article>)}</div></div><footer><a className="brand" href="/"><span className="brand-mark"><Percent size={18}/></span><span>amarildo tools</span></a><p><a href="mailto:info@amarildotools.com">info@amarildotools.com</a></p><span>© 2026 Amarildo Tools · Created by <a href="https://amarildoprendi.com/" target="_blank" rel="noopener noreferrer">Amarildo Prendi</a></span></footer></main>}
